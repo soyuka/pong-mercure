@@ -65,10 +65,8 @@
     data.set('topic', TOPIC)
 
     if (event.key === 'ArrowLeft') {
-      left++
       data.set('data', JSON.stringify({update: 'left'}))
     } else if (event.key === 'ArrowRight') {
-      right++
       data.set('data', JSON.stringify({update: 'right'}))
     } else {
       return
