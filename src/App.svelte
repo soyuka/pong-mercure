@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte'
-  import uuid from 'uuid'
+  import Game from './Game'
 
   const TOPIC = 'https://pong.dev/game'
   const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOltdfX0.Q67FiWV2tFlMcOe69Az7OfO_GxD2oVa_A0EE3uCpR88'
@@ -16,6 +16,15 @@
   let displayLeft = 0
   let displayRight = 0
   let done = false
+
+  const gameOptions = {
+    gravity: 9.0,
+    mass: 3.0,
+    stiffness: 0.20,
+    damping: 0.7
+  }
+
+  const game = Game(gameOptions)
 
   function isDone() {
     const diff = right - left
@@ -35,6 +44,7 @@
   }
 
   async function App() {
+    game.init()
     const url = new URL(HUB_URL)
     url.searchParams.append('topic', TOPIC)
 
@@ -52,6 +62,11 @@
         displayRight = right
       }
     }
+  }
+
+  function resetGame() {
+     game.reset()
+     game.init(gameOptions)
   }
 
   onMount(App);
@@ -81,9 +96,29 @@
 <style>
 </style>
 
-<h1>Points {displayLeft} {displayRight}!</h1>
-{#if done}
-  Done, team {done} wins!
-{/if}
+<!-- <h1>Points {displayLeft} {displayRight}!</h1> -->
+<!-- {#if done} -->
+<!--   Done, team {done} wins! -->
+<!-- {/if} -->
 
+<label>
+  Gravity:
+  <input type=text bind:value={gameOptions.gravity} on:change={resetGame}>
+	<input type=range bind:value={gameOptions.gravity} on:change={resetGame}>
+</label>
+<label>
+  Stiffness:
+  <input type=text bind:value={gameOptions.stiffness} on:change={resetGame}>
+	<input type=range bind:value={gameOptions.stiffness} on:change={resetGame}>
+</label>
+<label>
+  Mass:
+  <input type=text bind:value={gameOptions.mass} on:change={resetGame}>
+	<input type=range bind:value={gameOptions.mass} on:change={resetGame}>
+</label>
+<label>
+  Damping:
+  <input type=text bind:value={gameOptions.damping} on:change={resetGame}>
+	<input type=range bind:value={gameOptions.damping} on:change={resetGame}>
+</label>
 <svelte:window on:keydown={handleKeydown}/>
